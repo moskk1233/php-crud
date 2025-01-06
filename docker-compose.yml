@@ -1,0 +1,8 @@
+services:
+  php:
+    image: php:apache
+    container_name: php
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/var/www/html
