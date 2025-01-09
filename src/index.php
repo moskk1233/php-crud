@@ -120,7 +120,7 @@ function getTotalPage($limit)
         <div class="mt-5">
           <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-center">
-              <li class="page-item <?= $page == 1 ? "disabled" : "" ?>">
+              <li class="page-item <?= $page <= 1 ? "disabled" : "" ?>">
                 <a class="page-link" href="<?= $page != 1 ? "?page=" . $page - 1 : "" ?>">Previous</a>
               </li>
 
@@ -132,7 +132,7 @@ function getTotalPage($limit)
                 </li>
               <?php endfor ?>
 
-              <li class="page-item <?= $page == getTotalPage($limit) ? "disabled" : "" ?>">
+              <li class="page-item <?= $page >= getTotalPage($limit) ? "disabled" : "" ?>">
                 <a class="page-link" href="<?= $page != getTotalPage($limit) ? "?page=" . $page + 1 : "" ?>">Next</a>
               </li>
             </ul>
