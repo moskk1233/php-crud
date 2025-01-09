@@ -5,6 +5,26 @@ session_start();
 if (!isset($_SESSION["students"])) {
   $_SESSION["students"] = [];
 }
+
+$page = $_GET["page"] ?? 1;
+$limit = 10;
+?>
+
+<?php
+function pagination(int $page, int $perPage)
+{
+  $startIndex = ($page - 1) * $perPage;
+
+  $pages = $_SESSION["students"];
+  return array_slice($pages, $startIndex, $perPage, true);
+}
+
+function getTotalPage($limit)
+{
+  $size = count($_SESSION["students"]);
+
+  return ceil($size / $limit);
+}
 ?>
 
 <!DOCTYPE html>
@@ -33,6 +53,25 @@ if (!isset($_SESSION["students"])) {
             <button class="btn btn-success fs-3" style="width: 100%;">เพิ่มข้อมูล</button>
           </a>
         </div>
+        <form action="gendata.php" method="post">
+          <div class="row mt-3">
+            <div class="col">
+              <input 
+                type="number"
+                name="gen_data"
+                class="form-control" 
+                placeholder="กรอกจำนวนข้อมูลที่ต้องการ Mock" 
+                aria-label="กรอกจำนวนข้อมูลที่ต้องการ Mock"
+                min=0
+                max=1000
+                required
+              />
+            </div>
+            <div class="col">
+              <button type="submit" class="btn btn-warning" style="width: 100%;">Mock ข้อมูล</button>
+            </div>
+          </div>
+        </form>
 
         <!-- รายชื่อ -->
         <div class="mt-5">
@@ -50,7 +89,7 @@ if (!isset($_SESSION["students"])) {
                 <th>จัดการข้อมูล</th>
               </tr>
 
-              <?php foreach ($_SESSION["students"] as $index => $student): ?>
+              <?php foreach (pagination($page, $limit) as $index => $student): ?>
                 <tr>
                   <td><?= htmlspecialchars($student->id) ?></td>
                   <td><?= htmlspecialchars($student->prefix) ?></td>
@@ -60,16 +99,14 @@ if (!isset($_SESSION["students"])) {
                   <td><?= htmlspecialchars($student->gpa) ?></td>
                   <td><?= htmlspecialchars($student->birthdate) ?></td>
                   <td>
-                    <a 
+                    <a
                       href="edit.php?idx=<?= $index ?>"
-                      class="btn btn-primary"
-                    >
+                      class="btn btn-primary">
                       แก้ไข
                     </a>
-                    <a 
+                    <a
                       href="delete.php?idx=<?= $index ?>"
-                      class="btn btn-outline-danger"
-                    >
+                      class="btn btn-outline-danger">
                       ลบ
                     </a>
                   </td>
@@ -77,6 +114,29 @@ if (!isset($_SESSION["students"])) {
               <?php endforeach ?>
             </table>
           </div>
+        </div>
+
+        <!-- Paginator -->
+        <div class="mt-5">
+          <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+              <li class="page-item <?= $page == 1 ? "disabled" : "" ?>">
+                <a class="page-link" href="<?= $page != 1 ? "?page=" . $page - 1 : "" ?>">Previous</a>
+              </li>
+
+              <?php for ($i = 1; $i <= getTotalPage($limit); $i++): ?>
+                <li class="page-item <?= $i == $page ? "active" : "" ?>">
+                  <a class="page-link" href="?page=<?= $i ?>">
+                    <?= $i ?>
+                  </a>
+                </li>
+              <?php endfor ?>
+
+              <li class="page-item <?= $page == getTotalPage($limit) ? "disabled" : "" ?>">
+                <a class="page-link" href="<?= $page != getTotalPage($limit) ? "?page=" . $page + 1 : "" ?>">Next</a>
+              </li>
+            </ul>
+          </nav>
         </div>
       </div>
     </div>

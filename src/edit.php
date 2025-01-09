@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
       $student->gpa = $_POST["gpa"];
       $student->birthdate = $_POST["birthdate"];
 
-      header("Location: /");
+      header("Location: " . $_SERVER["HTTP_REFERER"]);
       exit();
     }
   }

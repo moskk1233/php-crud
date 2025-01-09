@@ -8,9 +8,9 @@ if (isset($_GET["idx"])) {
     array_splice($_SESSION["students"], $idx, 1);
   }
 
-  header("Location: /");
+  header("Location: " . $_SERVER["HTTP_REFERER"]);
   exit();
 } else {
-  header("Location: /");
+  header("Location: " . $_SERVER["HTTP_REFERER"]);
   exit();
 }
