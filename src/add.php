@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     );
 
     array_push($_SESSION["students"], $student);
-    header("Location: " . $_SERVER["HTTP_REFERER"]);
+    header("Location: /");
     exit();
   }
 }
