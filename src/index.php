@@ -8,11 +8,9 @@ if (!isset($_SESSION["students"])) {
   $_SESSION["students"] = [];
 }
 
-$page = test_input($_GET["page"]) ?? 1;
+$page = isset($_GET["page"]) ? (int)test_input($_GET["page"]) : 1;
+$page = $page > 0 ? $page : 1;
 $limit = 10;
-if (!is_int($page)) {
-  $page = 1;
-}
 
 ?>
 
