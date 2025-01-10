@@ -1,13 +1,19 @@
 <?php
 include "Student.php";
+include "test_input.php";
+
 session_start();
 
 if (!isset($_SESSION["students"])) {
   $_SESSION["students"] = [];
 }
 
-$page = $_GET["page"] ?? 1;
+$page = test_input($_GET["page"]) ?? 1;
 $limit = 10;
+if (!is_int($page)) {
+  $page = 1;
+}
+
 ?>
 
 <?php
@@ -63,6 +69,7 @@ function getTotalPage($limit)
                 placeholder="กรอกจำนวนข้อมูลที่ต้องการ Mock" 
                 aria-label="กรอกจำนวนข้อมูลที่ต้องการ Mock"
                 min=0
+                max=1000
                 required
               />
             </div>
@@ -90,13 +97,13 @@ function getTotalPage($limit)
 
               <?php foreach (pagination($page, $limit) as $index => $student): ?>
                 <tr>
-                  <td><?= htmlspecialchars($student->id) ?></td>
-                  <td><?= htmlspecialchars($student->prefix) ?></td>
-                  <td><?= htmlspecialchars($student->first_name) ?></td>
-                  <td><?= htmlspecialchars($student->last_name) ?></td>
-                  <td><?= htmlspecialchars($student->year) ?></td>
-                  <td><?= htmlspecialchars($student->gpa) ?></td>
-                  <td><?= htmlspecialchars($student->birthdate) ?></td>
+                  <td><?= test_input($student->id) ?></td>
+                  <td><?= test_input($student->prefix) ?></td>
+                  <td><?= test_input($student->first_name) ?></td>
+                  <td><?= test_input($student->last_name) ?></td>
+                  <td><?= test_input($student->year) ?></td>
+                  <td><?= test_input($student->gpa) ?></td>
+                  <td><?= test_input($student->birthdate) ?></td>
                   <td>
                     <a
                       href="edit.php?idx=<?= $index ?>"

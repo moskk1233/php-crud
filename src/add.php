@@ -1,16 +1,18 @@
 <?php
 include "Student.php";
+include "test_input.php";
+
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (isset($_POST['id'], $_POST['prefix'], $_POST['firstname'], $_POST['lastname'], $_POST['year'], $_POST['gpa'], $_POST['birthdate'])) {
-    $id = $_POST["id"];
-    $prefix = $_POST["prefix"];
-    $first_name = $_POST["firstname"];
-    $last_name = $_POST["lastname"];
-    $year = $_POST["year"];
-    $gpa = $_POST["gpa"];
-    $birthdate = $_POST["birthdate"];
+    $id = test_input($_POST["id"]);
+    $prefix = test_input($_POST["prefix"]);
+    $first_name = test_input($_POST["firstname"]);
+    $last_name = test_input($_POST["lastname"]);
+    $year = test_input($_POST["year"]);
+    $gpa = test_input($_POST["gpa"]);
+    $birthdate = test_input($_POST["birthdate"]);
 
     $student = new Student(
       $id,
