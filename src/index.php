@@ -63,7 +63,6 @@ function getTotalPage($limit)
                 placeholder="กรอกจำนวนข้อมูลที่ต้องการ Mock" 
                 aria-label="กรอกจำนวนข้อมูลที่ต้องการ Mock"
                 min=0
-                max=1000
                 required
               />
             </div>
@@ -119,7 +118,7 @@ function getTotalPage($limit)
         <!-- Paginator -->
         <div class="mt-5">
           <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
+            <ul class="pagination justify-content-center flex-wrap">
               <li class="page-item <?= $page <= 1 ? "disabled" : "" ?>">
                 <a class="page-link" href="<?= $page != 1 ? "?page=" . $page - 1 : "" ?>">Previous</a>
               </li>
