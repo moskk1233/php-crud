@@ -60,16 +60,15 @@ function getTotalPage($limit)
         <form action="gendata.php" method="post">
           <div class="row mt-3">
             <div class="col">
-              <input 
+              <input
                 type="number"
                 name="gen_data"
-                class="form-control" 
-                placeholder="กรอกจำนวนข้อมูลที่ต้องการ Mock" 
+                class="form-control"
+                placeholder="กรอกจำนวนข้อมูลที่ต้องการ Mock"
                 aria-label="กรอกจำนวนข้อมูลที่ต้องการ Mock"
                 min=0
                 max=1000
-                required
-              />
+                required />
             </div>
             <div class="col">
               <button type="submit" class="btn btn-warning" style="width: 100%;">Mock ข้อมูล</button>
@@ -77,71 +76,77 @@ function getTotalPage($limit)
           </div>
         </form>
 
-        <!-- รายชื่อ -->
-        <div class="mt-5">
-          <p>มีรายชื่อทั้งหมด <?= count($_SESSION["students"]) ?> คน</p>
-          <div>
-            <table class="table table-striped">
-              <tr>
-                <th>รหัสนิสิต</th>
-                <th>คำนำหน้า</th>
-                <th>ชื่อ</th>
-                <th>นามสกุล</th>
-                <th>ชั้นปี</th>
-                <th>เกรดเฉลี่ย</th>
-                <th>วันเกิด</th>
-                <th>จัดการข้อมูล</th>
-              </tr>
-
-              <?php foreach (pagination($page, $limit) as $index => $student): ?>
+        <?php if (count($_SESSION["students"]) <= 0): ?>
+          <h1 class="text-center mt-5">ยังไม่มีข้อมูลนักเรียนกรุณากดเพิ่มที่ปุ่มสีเขียวหรือสีเหลืองก่อน</h1>
+        <?php else: ?>
+          <!-- รายชื่อ -->
+          <div class="mt-5">
+            <p>มีรายชื่อทั้งหมด <?= count($_SESSION["students"]) ?> คน</p>
+            <div class="overflow-x-scroll">
+              <table class="table table-striped">
                 <tr>
-                  <td><?= test_input($student->id) ?></td>
-                  <td><?= test_input($student->prefix) ?></td>
-                  <td><?= test_input($student->first_name) ?></td>
-                  <td><?= test_input($student->last_name) ?></td>
-                  <td><?= test_input($student->year) ?></td>
-                  <td><?= test_input($student->gpa) ?></td>
-                  <td><?= test_input($student->birthdate) ?></td>
-                  <td>
-                    <a
-                      href="edit.php?idx=<?= $index ?>"
-                      class="btn btn-primary">
-                      แก้ไข
-                    </a>
-                    <a
-                      href="delete.php?idx=<?= $index ?>"
-                      class="btn btn-outline-danger">
-                      ลบ
-                    </a>
-                  </td>
+                  <th>รหัสนิสิต</th>
+                  <th>คำนำหน้า</th>
+                  <th>ชื่อ</th>
+                  <th>นามสกุล</th>
+                  <th>ชั้นปี</th>
+                  <th>เกรดเฉลี่ย</th>
+                  <th>วันเกิด</th>
+                  <th>จัดการข้อมูล</th>
                 </tr>
-              <?php endforeach ?>
-            </table>
+
+                <?php foreach (pagination($page, $limit) as $index => $student): ?>
+                  <tr>
+                    <td><?= test_input($student->id) ?></td>
+                    <td><?= test_input($student->prefix) ?></td>
+                    <td><?= test_input($student->first_name) ?></td>
+                    <td><?= test_input($student->last_name) ?></td>
+                    <td><?= test_input($student->year) ?></td>
+                    <td><?= test_input($student->gpa) ?></td>
+                    <td><?= test_input($student->birthdate) ?></td>
+                    <td>
+                      <a
+                        href="edit.php?idx=<?= $index ?>"
+                        class="btn btn-primary">
+                        แก้ไข
+                      </a>
+                      <a
+                        href="delete.php?idx=<?= $index ?>"
+                        class="btn btn-outline-danger">
+                        ลบ
+                      </a>
+                    </td>
+                  </tr>
+                <?php endforeach ?>
+              </table>
+            </div>
           </div>
-        </div>
+        <?php endif ?>
 
         <!-- Paginator -->
-        <div class="mt-5">
-          <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center flex-wrap">
-              <li class="page-item <?= $page <= 1 ? "disabled" : "" ?>">
-                <a class="page-link" href="<?= $page != 1 ? "?page=" . $page - 1 : "" ?>">Previous</a>
-              </li>
-
-              <?php for ($i = 1; $i <= getTotalPage($limit); $i++): ?>
-                <li class="page-item <?= $i == $page ? "active" : "" ?>">
-                  <a class="page-link" href="?page=<?= $i ?>">
-                    <?= $i ?>
-                  </a>
+        <?php if (count($_SESSION["students"]) > 0): ?>
+          <div class="mt-5">
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-center flex-wrap">
+                <li class="page-item <?= $page <= 1 ? "disabled" : "" ?>">
+                  <a class="page-link" href="<?= $page != 1 ? "?page=" . $page - 1 : "" ?>">Previous</a>
                 </li>
-              <?php endfor ?>
 
-              <li class="page-item <?= $page >= getTotalPage($limit) ? "disabled" : "" ?>">
-                <a class="page-link" href="<?= $page != getTotalPage($limit) ? "?page=" . $page + 1 : "" ?>">Next</a>
-              </li>
-            </ul>
-          </nav>
-        </div>
+                <?php for ($i = 1; $i <= getTotalPage($limit); $i++): ?>
+                  <li class="page-item <?= $i == $page ? "active" : "" ?>">
+                    <a class="page-link" href="?page=<?= $i ?>">
+                      <?= $i ?>
+                    </a>
+                  </li>
+                <?php endfor ?>
+
+                <li class="page-item <?= $page >= getTotalPage($limit) ? "disabled" : "" ?>">
+                  <a class="page-link" href="<?= $page != getTotalPage($limit) ? "?page=" . $page + 1 : "" ?>">Next</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        <?php endif ?>
       </div>
     </div>
   </div>
