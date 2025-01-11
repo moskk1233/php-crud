@@ -7,12 +7,19 @@ use Framework\Database\PDOConnection;
 use Repositories\StudentRepository;
 use Usecases\StudentUsecase;
 
+session_start();
+if (!isset($_SESSION["authen"])) {
+  header("Location: /");
+  exit();
+}
+
 $conn = PDOConnection::getConnection();
 $studentRepository = new StudentRepository($conn);
 $studentUsecase = new StudentUsecase($studentRepository);
 
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
 
+  
   if (isset($_GET["id"])) {
     $id = $_GET["id"];
     $student = $studentUsecase->getStudentById($id);

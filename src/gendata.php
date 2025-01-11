@@ -7,6 +7,12 @@ use Framework\Database\PDOConnection;
 use Repositories\StudentRepository;
 use Usecases\StudentUsecase;
 
+session_start();
+if (!isset($_SESSION["authen"])) {
+  header("Location: /");
+  exit();
+}
+
 function generateFirstName()
 {
   $firstNames = ['John', 'Jane', 'Alex', 'Emily', 'Chris', 'Katie', 'Michael', 'Sarah', 'Daniel', 'Laura'];
@@ -52,6 +58,7 @@ function genData(int $id)
 $conn = PDOConnection::getConnection();
 $studentRepository = new StudentRepository($conn);
 $studentUsecase = new StudentUsecase($studentRepository);
+
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["gen_data"])) {
   $values = [];

@@ -8,6 +8,12 @@ use Repositories\StudentRepository;
 use Framework\Database\PDOConnection;
 use Usecases\StudentUsecase;
 
+session_start();
+if (!isset($_SESSION["authen"])) {
+  header("Location: /");
+  exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (isset($_POST['id'], $_POST['prefix'], $_POST['firstname'], $_POST['lastname'], $_POST['year'], $_POST['gpa'], $_POST['birthdate'])) {
     $conn = PDOConnection::getConnection();
