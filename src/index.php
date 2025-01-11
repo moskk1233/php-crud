@@ -8,6 +8,12 @@ use Repositories\StudentRepository;
 use Usecases\StudentUsecase;
 
 
+session_start();
+if (!isset($_SESSION["authen"])) {
+  header("Location: /login.php");
+  exit();
+}
+
 $conn = PDOConnection::getConnection();
 $studentRepository = new StudentRepository($conn);
 $studentUsecase = new StudentUsecase($studentRepository);
@@ -22,6 +28,7 @@ function getTotalPage(StudentUsecase $studentUsecase, $limit)
 
   return ceil($count / $limit);
 }
+
 ?>
 
 <!DOCTYPE html>
