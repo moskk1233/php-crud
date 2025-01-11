@@ -1,33 +1,26 @@
 <?php
-require_once "Student.php";
+
+require_once "autoload.php";
 require_once "test_input.php";
 
-session_start();
+use Framework\Database\PDOConnection;
+use Repositories\StudentRepository;
+use Usecases\StudentUsecase;
 
-if (!isset($_SESSION["students"])) {
-  $_SESSION["students"] = [];
-}
+
+$conn = PDOConnection::getConnection();
+$studentRepository = new StudentRepository($conn);
+$studentUsecase = new StudentUsecase($studentRepository);
 
 $page = isset($_GET["page"]) ? (int)test_input($_GET["page"]) : 1;
 $page = $page > 0 ? $page : 1;
 $limit = 10;
 
-?>
-
-<?php
-function pagination(int $page, int $perPage)
+function getTotalPage(StudentUsecase $studentUsecase, $limit)
 {
-  $startIndex = ($page - 1) * $perPage;
+  $count = $studentUsecase->getAllStudentCount();
 
-  $pages = $_SESSION["students"];
-  return array_slice($pages, $startIndex, $perPage, true);
-}
-
-function getTotalPage($limit)
-{
-  $size = count($_SESSION["students"]);
-
-  return ceil($size / $limit);
+  return ceil($count / $limit);
 }
 ?>
 
@@ -75,56 +68,52 @@ function getTotalPage($limit)
             </div>
           </div>
         </form>
+        
+        <!-- ข้อมูลตาราง -->
+        <div class="mt-5">
+          <p>มีรายชื่อทั้งหมด <?= $studentUsecase->getAllStudentCount() ?> คน</p>
+          <div class="overflow-x-scroll">
+            <table class="table table-striped">
+              <tr>
+                <th>รหัสนิสิต</th>
+                <th>คำนำหน้า</th>
+                <th>ชื่อ</th>
+                <th>นามสกุล</th>
+                <th>ชั้นปี</th>
+                <th>เกรดเฉลี่ย</th>
+                <th>วันเกิด</th>
+                <th>จัดการข้อมูล</th>
+              </tr>
 
-        <?php if (count($_SESSION["students"]) <= 0): ?>
-          <h1 class="text-center mt-5">ยังไม่มีข้อมูลนักเรียนกรุณากดเพิ่มที่ปุ่มสีเขียวหรือสีเหลืองก่อน</h1>
-        <?php else: ?>
-          <!-- รายชื่อ -->
-          <div class="mt-5">
-            <p>มีรายชื่อทั้งหมด <?= count($_SESSION["students"]) ?> คน</p>
-            <div class="overflow-x-scroll">
-              <table class="table table-striped">
+              <?php foreach ($studentUsecase->getStudentPaginated($page, $limit) as $index => $student): ?>
                 <tr>
-                  <th>รหัสนิสิต</th>
-                  <th>คำนำหน้า</th>
-                  <th>ชื่อ</th>
-                  <th>นามสกุล</th>
-                  <th>ชั้นปี</th>
-                  <th>เกรดเฉลี่ย</th>
-                  <th>วันเกิด</th>
-                  <th>จัดการข้อมูล</th>
+                  <td><?= test_input($student->id) ?></td>
+                  <td><?= test_input($student->prefix) ?></td>
+                  <td><?= test_input($student->first_name) ?></td>
+                  <td><?= test_input($student->last_name) ?></td>
+                  <td><?= test_input($student->year) ?></td>
+                  <td><?= test_input($student->gpa) ?></td>
+                  <td><?= test_input($student->birthdate) ?></td>
+                  <td>
+                    <a
+                      href="edit.php?id=<?= $student->id ?>"
+                      class="btn btn-primary">
+                      แก้ไข
+                    </a>
+                    <a
+                      href="delete.php?id=<?= $student->id ?>"
+                      class="btn btn-outline-danger">
+                      ลบ
+                    </a>
+                  </td>
                 </tr>
-
-                <?php foreach (pagination($page, $limit) as $index => $student): ?>
-                  <tr>
-                    <td><?= test_input($student->id) ?></td>
-                    <td><?= test_input($student->prefix) ?></td>
-                    <td><?= test_input($student->first_name) ?></td>
-                    <td><?= test_input($student->last_name) ?></td>
-                    <td><?= test_input($student->year) ?></td>
-                    <td><?= test_input($student->gpa) ?></td>
-                    <td><?= test_input($student->birthdate) ?></td>
-                    <td>
-                      <a
-                        href="edit.php?idx=<?= $index ?>"
-                        class="btn btn-primary">
-                        แก้ไข
-                      </a>
-                      <a
-                        href="delete.php?idx=<?= $index ?>"
-                        class="btn btn-outline-danger">
-                        ลบ
-                      </a>
-                    </td>
-                  </tr>
-                <?php endforeach ?>
-              </table>
-            </div>
+              <?php endforeach ?>
+            </table>
           </div>
-        <?php endif ?>
+        </div>
 
-        <!-- Paginator -->
-        <?php if (count($_SESSION["students"]) > 0): ?>
+        <!-- Pagination -->
+        <?php if ($studentUsecase->getAllStudentCount() > 0): ?>
           <div class="mt-5">
             <nav aria-label="Page navigation example">
               <ul class="pagination justify-content-center flex-wrap">
@@ -132,7 +121,7 @@ function getTotalPage($limit)
                   <a class="page-link" href="<?= $page != 1 ? "?page=" . $page - 1 : "" ?>">Previous</a>
                 </li>
 
-                <?php for ($i = 1; $i <= getTotalPage($limit); $i++): ?>
+                <?php for ($i = 1; $i <= getTotalPage($studentUsecase, $limit); $i++): ?>
                   <li class="page-item <?= $i == $page ? "active" : "" ?>">
                     <a class="page-link" href="?page=<?= $i ?>">
                       <?= $i ?>
@@ -140,8 +129,8 @@ function getTotalPage($limit)
                   </li>
                 <?php endfor ?>
 
-                <li class="page-item <?= $page >= getTotalPage($limit) ? "disabled" : "" ?>">
-                  <a class="page-link" href="<?= $page != getTotalPage($limit) ? "?page=" . $page + 1 : "" ?>">Next</a>
+                <li class="page-item <?= $page >= getTotalPage($studentUsecase, $limit) ? "disabled" : "" ?>">
+                  <a class="page-link" href="<?= $page != getTotalPage($studentUsecase, $limit) ? "?page=" . $page + 1 : "" ?>">Next</a>
                 </li>
               </ul>
             </nav>

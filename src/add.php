@@ -1,11 +1,19 @@
 <?php
-require_once "Student.php";
+
+require_once "autoload.php";
 require_once "test_input.php";
 
-session_start();
+use Entities\Student;
+use Repositories\StudentRepository;
+use Framework\Database\PDOConnection;
+use Usecases\StudentUsecase;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (isset($_POST['id'], $_POST['prefix'], $_POST['firstname'], $_POST['lastname'], $_POST['year'], $_POST['gpa'], $_POST['birthdate'])) {
+    $conn = PDOConnection::getConnection();
+    $studentRepository = new StudentRepository($conn);
+    $studentUsecase = new StudentUsecase($studentRepository);
+
     $id = test_input($_POST["id"]);
     $prefix = test_input($_POST["prefix"]);
     $first_name = test_input($_POST["firstname"]);
@@ -24,7 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       $birthdate
     );
 
-    array_push($_SESSION["students"], $student);
+    $studentUsecase->createStudent($student);
+
     header("Location: /");
     exit();
   }
@@ -64,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
           <div class="row mb-3">
             <div class="col">
               <label class="fs-4" for="firstname">ชื่อ</label>
-              <input type="text" name="firstname" id="firstname" class="form-control" placeholder="กรอกชื่อ" required >
+              <input type="text" name="firstname" id="firstname" class="form-control" placeholder="กรอกชื่อ" required>
             </div>
 
             <div class="col">

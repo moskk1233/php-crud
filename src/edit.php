@@ -1,36 +1,44 @@
 <?php
-require_once "Student.php";
-session_start();
+
+require_once "autoload.php";
+
+use Entities\Student;
+use Framework\Database\PDOConnection;
+use Repositories\StudentRepository;
+use Usecases\StudentUsecase;
+
+$conn = PDOConnection::getConnection();
+$studentRepository = new StudentRepository($conn);
+$studentUsecase = new StudentUsecase($studentRepository);
 
 if ($_SERVER["REQUEST_METHOD"] === "GET") {
-  if (isset($_GET["idx"])) {
-    $idx = $_GET["idx"];
-    $students = $_SESSION["students"];
 
-    if (isset($students[$idx])) {
-      $student = $students[$idx];
-    } else {
+  if (isset($_GET["id"])) {
+    $id = $_GET["id"];
+    $student = $studentUsecase->getStudentById($id);
+
+    if (!isset($student)) {
       header("Location: /");
       exit();
     }
   }
 } elseif ($_SERVER["REQUEST_METHOD"] === "POST") {
-  if (isset($_GET["idx"])) {
-    $idx = $_GET["idx"];
-    $student = $_SESSION["students"][$idx];
+  if (isset($_GET["id"])) {
+    $id = $_GET["id"];
+    $student = new Student(
+      $_POST["id"],
+      $_POST["prefix"],
+      $_POST["firstname"],
+      $_POST["lastname"],
+      $_POST["year"],
+      $_POST["gpa"],
+      $_POST["birthdate"]
+    );
 
-    if (isset($_POST['id'], $_POST['prefix'], $_POST['firstname'], $_POST['lastname'], $_POST['year'], $_POST['gpa'], $_POST['birthdate'])) {
-      $student->id = $_POST["id"];
-      $student->prefix = $_POST["prefix"];
-      $student->first_name = $_POST["firstname"];
-      $student->last_name = $_POST["lastname"];
-      $student->year = $_POST["year"];
-      $student->gpa = $_POST["gpa"];
-      $student->birthdate = $_POST["birthdate"];
-
-      header("Location: /");
-      exit();
-    }
+    $studentUsecase->editStudentById($id, $student);
+    
+    header("Location: /");
+    exit();
   }
 }
 ?>
@@ -140,7 +148,7 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
 
           <div class="mb-3 mt-5">
             <button type="submit" class="btn btn-success">บันทึกข้อมูล</button>
-            <button class="btn btn-outline-danger" onclick="cancelAction()">ยกเลิก</button>
+            <a class="btn btn-outline-danger" href="/">ยกเลิก</a>
           </div>
         </form>
       </div>
