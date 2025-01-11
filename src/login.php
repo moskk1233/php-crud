@@ -52,6 +52,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 
 <body>
+  <?php require_once "Components/navbar.php" ?>
+  
   <div
     class="d-flex align-items-center justify-content-center mt-5 mb-5"
   >

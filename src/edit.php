@@ -62,6 +62,8 @@ if ($_SERVER["REQUEST_METHOD"] === "GET") {
 </head>
 
 <body>
+  <?php require_once "Components/navbar.php" ?>
+  
   <div style="width: 50%;" class="mx-auto m-5">
     <div class="card">
       <div class="card-body">
