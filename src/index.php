@@ -68,7 +68,25 @@ function getTotalPage(StudentUsecase $studentUsecase, $limit)
             </div>
           </div>
         </form>
-        
+        <form action="bulk_delete.php" method="post">
+          <div class="row mt-3">
+            <div class="col">
+              <input
+                type="number"
+                name="bulk_delete_count"
+                class="form-control"
+                placeholder="กรอกจำนวนข้อมูลที่ต้องการลบ"
+                aria-label="กรอกจำนวนข้อมูลที่ต้องการลบ"
+                min=0
+                max=1000
+                required />
+            </div>
+            <div class="col">
+              <button type="submit" class="btn btn-danger" style="width: 100%;">ลบข้อมูล</button>
+            </div>
+          </div>
+        </form>
+
         <!-- ข้อมูลตาราง -->
         <div class="mt-5">
           <p>มีรายชื่อทั้งหมด <?= $studentUsecase->getAllStudentCount() ?> คน</p>
