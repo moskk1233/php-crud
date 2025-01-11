@@ -59,6 +59,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 </head>
 
 <body>
+  <?php require_once "Components/navbar.php" ?>
+  
   <div
     class="container mt-5 mb-5 mx-auto"
     style="width: 80vh;">

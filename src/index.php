@@ -43,6 +43,8 @@ function getTotalPage(StudentUsecase $studentUsecase, $limit)
 </head>
 
 <body>
+  <?php require_once "Components/navbar.php" ?>
+
   <div class="container">
     <div id="header">
       <h1 class="text-center p-5">
