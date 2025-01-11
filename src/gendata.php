@@ -54,9 +54,21 @@ $studentRepository = new StudentRepository($conn);
 $studentUsecase = new StudentUsecase($studentRepository);
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["gen_data"])) {
+  $values = [];
+  
   for ($i = 1; $i <= min($_POST["gen_data"], 1000); $i++) {
-    $studentUsecase->createStudent(genData($i));
+    $student = genData($i);
+    $values[] = "('$student->id', '$student->prefix', '$student->first_name', '$student->last_name', '$student->year', '$student->gpa', '$student->birthdate')";
   }
+  
+  $sql = "
+    INSERT INTO Student (id, prefix, first_name, last_name, grade_year, gpa, birthdate)
+    VALUES 
+  " . implode(", ", $values);
+
+  $stmt = $conn->prepare($sql);
+  $stmt->execute();
+  
   header("Location: " . $_SERVER["HTTP_REFERER"]);
   exit();
 }
