@@ -1,5 +1,5 @@
 <?php
-include "Student.php";
+require_once "Student.php";
 session_start();
 
 if (isset($_GET["idx"])) {

@@ -1,8 +1,35 @@
 services:
   php:
-    image: php:apache
+    build:
+      context: ./
+      dockerfile: Dockerfile
     container_name: php
     ports:
       - "80:80"
     volumes:
       - ./src:/var/www/html
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:lts
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+  
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+    depends_on:
+      - mysql
+
+volumes:
+  mysql:

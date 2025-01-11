@@ -1,6 +1,6 @@
 <?php
-include "Student.php";
-include "test_input.php";
+require_once "Student.php";
+require_once "test_input.php";
 
 session_start();
 
