@@ -1,8 +1,5 @@
 <?php 
-if (isset($_SESSION["authen"])) {
-  $user = $_SESSION["authen"];
-  $username = $user->username;
-}
+$username = isset($_SESSION["authen"]) ? $_SESSION["authen"]->username : "";
 ?>
 
 <nav class="navbar sticky-top bg-info">
@@ -10,9 +7,9 @@ if (isset($_SESSION["authen"])) {
     <div>
       <a class="navbar-brand" href="/">PHP CRUD</a>
     </div>
-    <?php if (isset($_SESSION["authen"])): ?>
+    <?php if ($username): ?>
       <div>
-        <span>ผู้ใช้งาน <?= $username ?></span>
+        <span>ผู้ใช้งาน <?= htmlspecialchars($username) ?></span>
         <a href="/logout.php" class="ms-3 btn btn-outline-danger">ออกจากระบบ</a>
       </div>
     <?php endif; ?>
