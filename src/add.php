@@ -112,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
           <div class="mb-3 mt-5">
             <button type="submit" class="btn btn-success">บันทึกข้อมูล</button>
-            <button class="btn btn-outline-danger" onclick="cancelAction()">ยกเลิก</button>
+            <a class="btn btn-outline-danger" href="/">ยกเลิก</a>
           </div>
         </form>
       </div>
@@ -120,11 +120,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   </div>
 </body>
 
-<script>
-  function cancelAction() {
-    window.location.href = "/";
-  }
-</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 </html>
