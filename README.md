@@ -1,3 +1,2 @@
 # วิธีรัน / พัฒนา
-เปิด CLI ขึ้นมาจากนั้นให้พิมพ์ `docker compose up -d` ถ้าหาก port 80 ใช้งานอยู่ให้ทำการเปลี่ยน port ที่ไฟล์ `docker-compose.yml`
-หากทุกอย่างสำเร็จแล้วสามารถพัฒนาเว็บได้ที่ src directory
+เปิด CLI ขึ้นมาจากนั้นให้พิมพ์ `cp .env.example .env` จากนั้นพิมพ์ `docker compose up -d` ถ้าหาก port 80 ใช้งานอยู่ให้ทำการเปลี่ยน port ที่ไฟล์ `docker-compose.yml` หากทุกอย่างสำเร็จแล้วสามารถพัฒนาเว็บได้ที่ src director
