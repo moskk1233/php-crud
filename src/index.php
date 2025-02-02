@@ -40,7 +40,6 @@ function getTotalPage(StudentUsecase $studentUsecase, $limit)
   <title>PHP CRUD</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2/dist/sweetalert2.min.css">
 </head>
 
 <body>
@@ -101,7 +100,7 @@ function getTotalPage(StudentUsecase $studentUsecase, $limit)
         <div class="mt-5">
           <p>มีรายชื่อทั้งหมด <?= $studentUsecase->getAllStudentCount() ?> คน</p>
           <div class="overflow-x-scroll">
-            <table id="student-table" class="table table-striped">
+            <table class="table table-striped">
               <thead>
                 <tr>
                   <th>รหัสนิสิต</th>
@@ -114,36 +113,80 @@ function getTotalPage(StudentUsecase $studentUsecase, $limit)
                   <th>จัดการข้อมูล</th>
                 </tr>
               </thead>
-
               <tbody>
-                <!-- ข้อมูลตารางจะแสดงตรงนี้ -->
+                <?php foreach ($studentUsecase->getStudentPaginated($page, $limit) as $index => $student): ?>
+                  <tr>
+                    <td><?= test_input($student->id) ?></td>
+                    <td><?= test_input($student->prefix) ?></td>
+                    <td><?= test_input($student->first_name) ?></td>
+                    <td><?= test_input($student->last_name) ?></td>
+                    <td><?= test_input($student->year) ?></td>
+                    <td><?= test_input($student->gpa) ?></td>
+                    <td><?= test_input($student->birthdate) ?></td>
+                    <td>
+                      <a
+                        href="edit.php?id=<?= $student->id ?>"
+                        class="btn btn-primary">
+                        แก้ไข
+                      </a>
+                      <a
+                        href="delete.php?id=<?= $student->id ?>"
+                        class="btn btn-outline-danger">
+                        ลบ
+                      </a>
+                    </td>
+                  </tr>
+                <?php endforeach ?>
               </tbody>
             </table>
-            <div class="d-flex justify-content-center">
-              <div id="loading-student" class="spinner-border text-primary" role="status" style="width: 100px; height: 100px; display:none;">
-                <span class="visually-hidden">Loading...</span>
-              </div>
-            </div>
-            <?php if ($studentUsecase->getAllStudentCount() <= 0): ?>
-              <h1 class="text-center">ไม่มีข้อมูลนักเรียน</h1>
-              <?php endif ?>
           </div>
         </div>
 
         <!-- Pagination -->
-        <div class="mt-5">
-          <nav aria-label="Page navigation example">
-            <ul id="pagination" class="pagination justify-content-center flex-wrap">
-              <!-- ปุ่มเปลี่ยนหน้าจะอยู่ตรงนี้ -->
-            </ul>
-          </nav>
-        </div>
+        <?php if ($studentUsecase->getAllStudentCount() > 0): ?>
+          <div class="mt-5">
+            <nav aria-label="Page navigation example">
+              <ul class="pagination justify-content-center flex-wrap">
+                <li class="page-item <?= $page <= 1 ? "disabled" : "" ?>">
+                  <a class="page-link" href="<?= $page != 1 ? "?page=" . $page - 1 : "" ?>">Previous</a>
+                </li>
+                <?php for ($i = 1; $i <= getTotalPage($studentUsecase, $limit); $i++): ?>
+                  <li class="page-item <?= $i == $page ? "active" : "" ?>">
+                    <a class="page-link" href="?page=<?= $i ?>">
+                      <?= $i ?>
+                    </a>
+                  </li>
+                <?php endfor ?>
+                <li class="page-item <?= $page >= getTotalPage($studentUsecase, $limit) ? "disabled" : "" ?>">
+                  <a class="page-link" href="<?= $page != getTotalPage($studentUsecase, $limit) ? "?page=" . $page + 1 : "" ?>">Next</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        <?php endif ?>
       </div>
     </div>
   </div>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2/dist/sweetalert2.all.min.js"></script>
-<script src="js/js.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js"></script>
+<script>
+  const {
+    animate
+  } = Motion
+
+  $('tbody tr').each(function(index) {
+    animate(this, 
+      {
+        opacity: [0, 1],
+        x: [-100, 0]
+      },
+      {
+        delay: index * 0.02
+      }
+    )
+  })
+</script>
+
 </html>
