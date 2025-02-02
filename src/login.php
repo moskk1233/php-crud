@@ -17,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   $conn = PDOConnection::getConnection();
   $userRepository = new UserRepository($conn);
   $userUsecase = new UserUsecase($userRepository);
-  
+
   $username = $_POST["username"];
   $password = $_POST["password"];
 
@@ -43,6 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -53,11 +54,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 <body>
   <?php require_once "Components/navbar.php" ?>
-  
+
   <div
-    class="d-flex align-items-center justify-content-center mt-5 mb-5"
-  >
-    <div class="card rounded-3 shadow" style="width: 30vw;">
+    class="d-flex align-items-center justify-content-center mt-5 mb-5">
+    <div id="main-box" class="card rounded-3 shadow" style="width: 30vw;">
       <div class="card-body">
         <form action="" method="post">
           <div class="p-2">
@@ -90,7 +90,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <script
   src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
   integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-  crossorigin="anonymous"
-></script>
+  crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js"></script>
+<script>
+  const { animate } = Motion
+
+  const mainBox = document.querySelector('#main-box')
+  animate(mainBox,
+    { x: [-100, 0], opacity: [0, 1] },
+  )
+</script>
 <script src="index.js"></script>
+
 </html>
